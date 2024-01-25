@@ -3,15 +3,17 @@
 
 #include "RMP_Subsystem.h"
 
+#include "LevelSequence.h"
 #include "RMP_Job.h"
+#include "RMP_Settings.h"
 
 DEFINE_LOG_CATEGORY(LogRMP)
 
 
-URMP_Job* URMP_Subsystem::NewJob(FString URL_Name)
+URMP_Job* URMP_Subsystem::NewJob(const FString& URL_Name, const FString& LLMParam, bool InNeedFakeSequence)
 {
 	URMP_Job* NewJob = NewObject<URMP_Job>();
-	NewJob->Init(URL_Name);
+	NewJob->Init(URL_Name,LLMParam,InNeedFakeSequence);
 
 	CachedJobs.Add(NewJob);
 
@@ -32,15 +34,40 @@ void URMP_Subsystem::Deinitialize()
 	FTSTicker::GetCoreTicker().RemoveTicker(TickerHandle);
 }
 
-void URMP_Subsystem::CreateNewSequence(const FCreateNewSequence_Param& InParam) const
+void URMP_Subsystem::CreateNewSequence(const FCreateNewSequence_Param& InParam, bool bUseFakeSequence) const
 {
-	if (OnCreateNewSequenceImpl.IsBound())
+	if (!bUseFakeSequence)
 	{
-		OnCreateNewSequenceImpl.Execute(InParam);
+		if (OnCreateNewSequenceImpl.IsBound())
+		{
+			OnCreateNewSequenceImpl.Execute(InParam);
+		}
+		else
+		{
+			UE_LOG(LogRMP, Error, TEXT("OnCreateNewSequenceImpl: Is Not Bound"));
+		}
 	}
 	else
 	{
-		UE_LOG(LogRMP, Error, TEXT("OnCreateNewSequenceImpl: Is Not Bound"));
+		// for test without sequenceMaker
+		if (GetDefault<URMP_Settings>()->TestSequence.IsNull())
+		{
+			UE_LOG(LogRMP, Error, TEXT("TestSequence is null"));
+			return;
+		}
+		if (GetDefault<URMP_Settings>()->TestSequenceLevel.IsNull())
+		{
+			UE_LOG(LogRMP, Error, TEXT("TestSequenceLevel is null"));
+			return;
+		}
+		 
+		const auto TestSequence = Cast<ULevelSequence>(GetDefault<URMP_Settings>()->TestSequence.TryLoad());
+		if (TestSequence == nullptr)
+		{
+			UE_LOG(LogRMP, Error, TEXT("Can not load TestSequence %s"), *GetDefault<URMP_Settings>()->TestSequence.GetAssetPathString());
+			return;
+		}
+		GEngine->GetEngineSubsystem<URMP_Subsystem>()->OnCreateNewSequenceFinishImpl(TestSequence, GetDefault<URMP_Settings>()->TestSequenceLevel);
 	}
 }
 

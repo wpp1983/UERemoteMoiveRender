@@ -41,7 +41,7 @@ class URMP_Job : public UObject
 public:
 	URMP_Job();
 	
-	void Init(FString InMovieName);	
+	void Init(const FString& InMovieName, const FString& InLLMParam, bool InNeedFakeSequence = false);	
 
 	void StartJob();
 
@@ -70,4 +70,7 @@ private:
 private:
 	ECreateMovieJobState JobState;
 	FString MovieName;
+	FString LLMParam;
+	
+	bool bNeedFakeSequence;
 };

@@ -16,7 +16,10 @@ public:
 	ARMP_WebListener();
 
 	UFUNCTION(BlueprintCallable, Category = "RMP")
-	void OnNewMovieRequest(const FString& InMoiveURL);
+	void OnNewMovieRequest(const FString& InMovieName, const FString& InLLMParam);
+
+	UFUNCTION(BlueprintCallable, Category = "RMP")
+	void OnNewMovieRequestFakeSequence(const FString& InMovieName, const FString& InLLMParam);
 
 protected:
 	// Called when the game starts or when spawned

@@ -49,9 +49,11 @@ URMP_Job::URMP_Job()
 	JobState = ECreateMovieJobState::None;
 }
 
-void URMP_Job::Init(FString InMovieName)
+void URMP_Job::Init(const FString& InMovieName, const FString& InLLMParam, bool InNeedFakeSequence)
 {
 	MovieName = InMovieName;
+	LLMParam = InLLMParam;
+	bNeedFakeSequence = InNeedFakeSequence;
 	JobState = ECreateMovieJobState::None;
 }
 
@@ -109,7 +111,7 @@ void URMP_Job::CreateNewSequence()
 	UE_LOG(LogRMP, Log, TEXT("Start CreateNewSequence: %s"), *GetJobName());
 
 	JobState = ECreateMovieJobState::SequenceCreating;
-	GEngine->GetEngineSubsystem<URMP_Subsystem>()->CreateNewSequence(FCreateNewSequence_Param{GetJobName()});
+	GEngine->GetEngineSubsystem<URMP_Subsystem>()->CreateNewSequence(FCreateNewSequence_Param{GetJobName()}, bNeedFakeSequence);
 }
 
 void URMP_Job::OnCreateNewSequenceFinish(ULevelSequence* InSequence, const FSoftObjectPath& InLevel)

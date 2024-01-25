@@ -17,13 +17,15 @@ USTRUCT(BlueprintType)
 struct FCreateNewSequence_Param
 {
 	GENERATED_BODY()
+
 	FString SequenceName;
+	FString LLMParam;
 	
 };
 
 DECLARE_DELEGATE_RetVal_OneParam(bool, FCreateSequenceDelegate, FCreateNewSequence_Param);
 DECLARE_DELEGATE_RetVal_OneParam(bool, FCancelCreateSequenceDelegate, FCreateNewSequence_Param);
-
+ 
 /**
  *
  */
@@ -46,7 +48,8 @@ public:
 	/**
 	 *  Create a new job to render a sequence to a mp4 file.
 	 */
-	URMP_Job* NewJob(FString URL_Name);
+	URMP_Job* NewJob(const FString& URL_Name, const FString& LLMParam, bool InNeedFakeSequence = false);
+
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	/**
@@ -70,7 +73,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////////////
 
 protected:
-	void CreateNewSequence(const FCreateNewSequence_Param& InParam) const;
+	void CreateNewSequence(const FCreateNewSequence_Param& InParam, bool bUseFakeSequence = false) const;
 	void CancelNewSequence(const FCreateNewSequence_Param& InParam) const;
 
 private:

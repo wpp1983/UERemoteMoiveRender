@@ -13,11 +13,17 @@ ARMP_WebListener::ARMP_WebListener()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void ARMP_WebListener::OnNewMovieRequest(const FString& InMoiveURL)
+void ARMP_WebListener::OnNewMovieRequest(const FString& InMovieName, const FString& InLLMParam)
 {
-	UE_LOG(LogRMP, Log, TEXT("ARMP_WebListener::OnNewMovieRequest:%s"), *InMoiveURL);
-	GEngine->GetEngineSubsystem<URMP_Subsystem>()->NewJob(InMoiveURL);
+	UE_LOG(LogRMP, Log, TEXT("ARMP_WebListener::OnNewMovieRequest:%s"), *InMovieName);
+	GEngine->GetEngineSubsystem<URMP_Subsystem>()->NewJob(InMovieName,InLLMParam);
 	
+}
+
+void ARMP_WebListener::OnNewMovieRequestFakeSequence(const FString& InMovieName, const FString& InLLMParam)
+{
+	UE_LOG(LogRMP, Log, TEXT("ARMP_WebListener::OnNewMovieRequestFakeSequence:%s"), *InMovieName);
+	GEngine->GetEngineSubsystem<URMP_Subsystem>()->NewJob(InMovieName,InLLMParam,true);
 }
 
 // Called when the game starts or when spawned
