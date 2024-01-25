@@ -25,6 +25,9 @@ This is a UE plugin.
 1. Test: 设置FakeSequence，用于测试
 2. Movie Pipeline Primary config：用于Render Movie的设置，下面会有详细介绍
 3. Movie Output Path： Movie 的输出路径
+   - RMP_MoviePipelinePrimaryConfig中也要设置一样的地址！！！
+### Remote Control  插件
+1. 设置端口 Remote Control HTTP Server Port
 ### Movie Pipeline CLI Encoder 插件 设置
 主要是设置FFmpeg的路径和一些默认参数，参考 [UE官方文档](https://docs.unrealengine.com/5.3/en-US/cinematic-rendering-export-formats-in-unreal-engine/)
 
